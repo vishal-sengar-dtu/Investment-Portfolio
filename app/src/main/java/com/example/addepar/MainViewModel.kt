@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 
 class MainViewModel(private val context: Context) : ViewModel() {
@@ -24,6 +25,9 @@ class MainViewModel(private val context: Context) : ViewModel() {
         inputStream.close()
         val jsonString = String(buffer, Charsets.UTF_8)
         val gson = Gson()
-        return gson.fromJson(jsonString, Array<Investment>::class.java)
+        val investmentType = object : TypeToken<Array<Investment>>() {}.type
+        val jsonObject = gson.fromJson(jsonString, JsonObject::class.java)
+        val investmentsJsonArray = jsonObject.getAsJsonArray("investments")
+        return gson.fromJson(investmentsJsonArray, investmentType)
     }
 }
